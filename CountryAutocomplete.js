@@ -8,6 +8,19 @@
 function CountryAutocomplete(config) {
 
     var $self  = this;
+
+    /**
+     * Combine object, IE 11 compatible.
+     */
+    this.mergeObjects = function(objects) {
+        return objects.reduce(function (r, o) {
+            Object.keys(o).forEach(function (k) {
+                r[k] = o[k];
+            });
+            return r;
+        }, {})
+    };
+
     this.requestBody = {
         "jsonrpc": "2.0",
         "id": 1,
@@ -22,14 +35,16 @@ function CountryAutocomplete(config) {
     };
     this.fieldsAreSet = false;
     this.dirty = false;
-    this.config = Object.assign(this.defaultConfig, config);
+    this.config = $self.mergeObjects([this.defaultConfig, config]);
     this.connector = new XMLHttpRequest();
+
+
 
     /**
      * Updates the config.
      */
     this.updateConfig = function(newConfig) {
-        $self.config = Object.assign($self.config, newConfig);
+        $self.config = $self.mergeObjects([$self.config, newConfig]);
     }
 
     /**
